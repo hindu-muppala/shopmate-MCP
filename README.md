@@ -70,3 +70,8 @@ The MCP server exposes catalog search, inventory checks, cart updates,
 checkout validation, order status, catalog categories, and the return-policy
 resource. Checkout creates a pending order after recalculating its total from
 current database prices; it does not create a payment-provider session.
+
+## Demo
+
+https://youtu.be/9DQoErKcFs0
+
