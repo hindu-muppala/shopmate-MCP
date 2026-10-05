@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ecf8f8">
+    <title>ShopMate — AI Storefront</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ShopMate home">
+        <span class="brand-mark" aria-hidden="true">s</span>
+        <span>shopmate<span class="brand-period">.</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="environment-label">API DEMO</span>
+        <span class="api-status" id="api-status"><i></i><span>Checking API</span></span>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="intro">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-line"></span> YOUR EVERYDAY MARKET</p>
+          <h1>Good things,<br><span>made easy.</span></h1>
+          <p class="intro-copy">Explore the live catalog, check stock, and try the complete ShopMate shopping flow.</p>
+        </div>
+        <div class="intro-note">
+          <span class="note-icon" aria-hidden="true">↗</span>
+          <span>Connected to your<br><strong>ShopMate API</strong></span>
+        </div>
+      </section>
+
+      <section class="auth-panel" aria-labelledby="auth-heading">
+        <div class="auth-copy">
+          <span class="auth-icon" aria-hidden="true">⌁</span>
+          <div>
+            <h2 id="auth-heading">Connect your account</h2>
+            <p>Connect a bearer token to let the assistant access your cart and orders.</p>
+          </div>
+        </div>
+        <form id="token-form" class="token-form">
+          <label class="visually-hidden" for="access-token">Access token</label>
+          <input id="access-token" type="password" placeholder="Paste access token" autocomplete="off" spellcheck="false">
+          <button class="button button-dark" type="submit">Use token <span aria-hidden="true">→</span></button>
+          <button class="button button-quiet" id="clear-token" type="button" hidden>Clear</button>
+        </form>
+        <p class="auth-footnote" id="auth-message">The API has no sign-in route; obtain a token from your development setup.</p>
+      </section>
+
+      <section class="assistant-section" aria-labelledby="assistant-heading">
+        <div class="assistant-heading">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-line"></span> YOUR AI SHOPPING COMPANION</p>
+            <h2 id="assistant-heading">Ask ShopMate<span class="heading-dot">.</span></h2>
+            <p>Tell ShopMate what you’re looking for. The assistant checks the live catalog and inventory for you.</p>
+          </div>
+          <span class="assistant-model"><i></i> FREE-TIER AI</span>
+        </div>
+        <div class="chat-window">
+          <div class="chat-messages" id="chat-messages" aria-live="polite" aria-relevant="additions text">
+            <div class="chat-message assistant-message">
+              <span class="chat-avatar" aria-hidden="true">s</span>
+              <div class="message-bubble">
+                <span class="message-author">ShopMate</span>
+                <p>Hi! I can help you find products, check stock, and answer questions about your cart and orders. What are you shopping for?</p>
+              </div>
+            </div>
+          </div>
+          <div class="suggested-prompts" aria-label="Suggested questions">
+            <button type="button" data-prompt="Show me some products in the catalog">Browse products</button>
+            <button type="button" data-prompt="What products are available for under ₹2000?">Find a good deal</button>
+            <button type="button" data-prompt="How can you help me shop today?">What can you do?</button>
+          </div>
+          <form id="chat-form" class="chat-form">
+            <label class="visually-hidden" for="chat-input">Message ShopMate</label>
+            <textarea id="chat-input" rows="1" maxlength="4000" placeholder="Ask about products, prices, or availability…" required></textarea>
+            <button id="chat-send" class="button button-dark chat-send" type="submit" aria-label="Send message">
+              <span>Send</span><span aria-hidden="true">↑</span>
+            </button>
+          </form>
+          <p class="chat-disclaimer">AI responses can make mistakes. Orders are only submitted when you explicitly ask to check out.</p>
+        </div>
+      </section>
+
+      <div class="store-layout">
+        <section class="catalog-section" aria-labelledby="catalog-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">FIND YOUR NEXT FAVORITE</p>
+              <h2 id="catalog-heading">The catalog<span class="heading-dot">.</span></h2>
+            </div>
+            <span class="result-count" id="result-count">Loading products…</span>
+          </div>
+
+          <form class="filter-bar" id="search-form">
+            <label class="search-field">
+              <span aria-hidden="true">⌕</span>
+              <span class="visually-hidden">Search products</span>
+              <input id="search-query" type="search" placeholder="Search the catalog">
+            </label>
+            <label class="select-field">
+              <span class="visually-hidden">Category</span>
+              <select id="category-filter">
+                <option value="">All categories</option>
+              </select>
+            </label>
+            <label class="price-field">
+              <span class="visually-hidden">Maximum price</span>
+              <span>Up to ₹</span>
+              <input id="max-price" type="number" min="0" step="0.01" placeholder="Any price">
+            </label>
+            <button class="button button-accent" type="submit">Search</button>
+          </form>
+
+          <div class="product-grid" id="product-grid" aria-live="polite">
+            <div class="loading-card"><span class="loader"></span> Loading the latest products</div>
+          </div>
+        </section>
+
+        <aside class="side-column">
+          <section class="panel cart-panel" aria-labelledby="cart-heading">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">READY WHEN YOU ARE</p>
+                <h2 id="cart-heading">Your bag <span class="cart-count" id="cart-count">0</span></h2>
+              </div>
+              <button class="icon-button" id="refresh-cart" type="button" aria-label="Refresh cart" title="Refresh cart">↻</button>
+            </div>
+            <div class="cart-content" id="cart-content">
+              <div class="empty-state">
+                <span class="empty-icon" aria-hidden="true">⌑</span>
+                <p>Your bag is waiting.</p>
+                <span>Add an item to get started.</span>
+              </div>
+            </div>
+            <div class="cart-summary" id="cart-summary" hidden>
+              <div class="total-row"><span>Subtotal</span><strong id="cart-total">₹0.00</strong></div>
+              <button class="button button-accent button-wide" id="checkout-button" type="button">Checkout <span aria-hidden="true">→</span></button>
+              <p class="checkout-note">Checkout creates a pending order. No payment is taken.</p>
+            </div>
+          </section>
+
+          <section class="panel inventory-panel" aria-labelledby="inventory-heading">
+            <div class="inventory-badge" aria-hidden="true">◎</div>
+            <p class="eyebrow">LIVE STOCK CHECK</p>
+            <h2 id="inventory-heading">Know before<br>you add.</h2>
+            <p class="inventory-copy">Check the available quantity for any product SKU.</p>
+            <form id="inventory-form" class="inventory-form">
+              <label class="visually-hidden" for="inventory-sku">Product SKU</label>
+              <input id="inventory-sku" type="text" placeholder="Enter a product SKU" required>
+              <button class="button button-dark button-wide" type="submit">Check availability <span aria-hidden="true">→</span></button>
+            </form>
+            <div class="inventory-result" id="inventory-result" aria-live="polite"></div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="orders-section" aria-labelledby="orders-heading">
+        <div class="section-heading orders-heading">
+          <div>
+            <p class="eyebrow">ALL IN ONE PLACE</p>
+            <h2 id="orders-heading">Recent orders<span class="heading-dot">.</span></h2>
+          </div>
+          <button class="button button-outline" id="refresh-orders" type="button">Refresh orders <span aria-hidden="true">↻</span></button>
+        </div>
+        <div class="orders-list" id="orders-list">
+          <div class="orders-placeholder">Connect an account to see its order history.</div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">s</span><span>shopmate<span class="brand-period">.</span></span></a>
+        <span>A live window into your ShopMate backend.</span>
+        <a href="/docs" target="_blank" rel="noreferrer">Explore the API <span aria-hidden="true">↗</span></a>
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
